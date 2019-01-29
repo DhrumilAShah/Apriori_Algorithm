@@ -1,0 +1,23 @@
+bed bath & beyond
+a->mattress,b->bedsheet,c->pillow,d->pillow_cover,e->comforter,f->bath_towels,g->shower_curtains,h->bath_rug,i->wastecan,j->soap_pump
+
+T01 bath_towels,bath_rug
+T02 soap_pump,pillow_cover,bath_rug,wastecan
+T03 shower_curtains,soap_pump
+T04 comforter,bath_towels,pillow
+T05 pillow_cover,pillow,bedsheet
+T06 pillow,comforter
+T07 mattress,soap_pump,shower_curtains,bath_rug
+T08 pillow,shower_curtains,bath_rug,comforter
+T09 soap_pump,wastecan,pillow,bath_towels,mattress,bedsheet,pillow_cover
+T10 wastecan,comforter,pillow_cover,pillow
+T11 bath_rug,bath_towels,pillow,pillow_cover
+T12 pillow,pillow_cover	
+T13 wastecan,soap_pump
+T14 bath_rug
+T15 wastecan,soap_pump,shower_curtains,bedsheet,pillow
+T16 bedsheet,mattress
+T17 bath_rug,shower_curtains,bath_towels
+T18 bath_towels
+T19 comforter,wastecan,shower_curtains
+T20 bath_towels,soap_pump,bath_rug

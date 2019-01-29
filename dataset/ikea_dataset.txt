@@ -1,0 +1,23 @@
+ikea
+a->dining_table,b->chairs,c->cutlery,d->sofa,e->armchair,f->mirror,g->knifes,h->chopping_board,i->plate,j->bowl
+
+T01 bowl,plate
+T02 mirror,knifes,armchair,sofa,chopping_board
+T03 sofa,armchair
+T04 chopping_borad,bowl,plate,sofa
+T05 dining_table
+T06 knifes
+T07 bowl,plate,armchair,cutlery,knifes,sofa
+T08 bowl,plate,armchair,sofa
+T09 plate,dining_table,chairs
+T10 bowl,dining_table,knifes,chopping_board
+T11 cutlery,bowl,plate
+T12 mirror,chairs,dining_table
+T13 plate,mirror,sofa,bowl
+T14 mirror,chairs
+T15 mirror,knifes,bowl	
+T16 cutlery,knifes
+T17 cutlery
+T18 plate,chopping_borad,armchair
+T19 chairs,dining_table
+T20 dining_table,chairs

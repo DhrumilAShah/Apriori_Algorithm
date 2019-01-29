@@ -1,0 +1,23 @@
+stop&shop
+a->apple,b->banana,c->soda,d->bread,e->sauce,f->icecream,g->milk,h->bounty,i->nutella,j->bottled_water
+
+T01 icecream,bread,sauce,bottled_water
+T02 milk,icecream,bread
+T03 bottled_water,soda,milk
+T04 bottled_water,bounty,bread,sauce	
+T05 milk,nutella,banana,apple,bread
+T06 bounty,icecream
+T07 bread,sauce	
+T08 nutella,bread
+T09 bread,milk,nutella
+T10 banana,apple
+T11 bread,soda
+T12 icecream,bounty,bottled_water	
+T13 milk,nutella,bread,icecream
+T14 bread,nutella
+T15 banana,apple	
+T16 bread,milk,nutella
+T17 icecream
+T18 bottled_water,soda
+T19 apple,bread,banana,bounty,soda,nutella
+T20 banana,apple,sauce,nutella

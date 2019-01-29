@@ -1,0 +1,23 @@
+amazon: 
+a->phone,b->phone_cover,c->phone_glass,d->portable_speake,e->headphones,f->pendrive,g->laptop,h->laptop_case,i->mouse,j->portable_charger
+
+T01 portable_charger,phone_cover,tempered_glass,phone
+T02 phone,pendrive
+T03 pendrive,mouse,portable_speaker,phone_cover,headphones,laptop
+T04 phone,laptop_case
+T05 portable_charger,phone,laptop_case,headphones,phone_cover
+T06 headphones,pendrive
+T07 phone_cover
+T08 mouse,laptop_case,laptop
+T09 laptop_case,phone
+T10 laptop_case,tempered_glass,portable_speaker
+T11 laptop_case,laptop,mouse,portable_speaker
+T12 phone_cover,phone,tempered_glass
+T13 portable_charger,mouse,laptop_case
+T14 portable_speaker,pendrive
+T15 laptop,mouse	
+T16 laptop_case
+T17 portable_speaker,phone_cover,headphones
+T18 phone,tempered_glass,phone_cover
+T19 headphones,phone
+T20 phone_cover,pendrive,phone,portable_speaker,portable_charger

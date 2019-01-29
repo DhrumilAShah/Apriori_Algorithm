@@ -1,0 +1,23 @@
+columbia
+a->shoes,b->socks,c->jacket,d->thermal_tshirt,e->joggers,f->zipper,g->bag,h->winter_cap,i->gloves,j->outerwear
+
+T01 gloves,winter_cap
+T02 zipper,joggers
+T03 joggers,socks,shoes
+T04 socks,shoes,zipper,joggers
+T05 joggers,socks,shoes,jacket,gloves,bag
+T06 winter_cap,gloves,jacket	
+T07 jacket,winter_cap
+T08 winter_cap,thermal_tshirt,shoes,gloves,bag,joggers
+T09 shoes
+T10 outerwear,jacket
+T11 thermal_tshirt
+T12 shoes,socks,thermal_tshirt,		
+T13 winter_cap,gloves
+T14 shoes,jacket,bag,thermal_tshirt,winter_cap,
+T15 socks
+T16 gloves,thermal_tshirt
+T17 outerwear,winter_cap,zipper,shoes,socks
+T18 thermal_tshirt,joggers,socks
+T19 shoes,joggers
+T20 socks,shoes,outerwear

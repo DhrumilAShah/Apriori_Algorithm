@@ -4,7 +4,7 @@ import numpy as np
 
 df = pd.read_excel('stop&shop.xlsx',header=None)
 data = np.array(df.as_matrix([1]))
-print(data)
+#print(data)
 
 def getCandidateMap(arr):
 	candMap = {}
@@ -24,19 +24,14 @@ def getSupport(data,*args):
 	trans = np.array(data)
 	args = np.array(args)
 	for x in np.nditer(trans, flags=['refs_ok'],op_flags=['readwrite']):
-		items = np.array(str(x).split(','))	
+		items = np.array(str(x).strip().split(','))	
 		checkArr=np.array([])
-		for i in np.nditer(args):
-			if((i in items)==True):
-				checkArr = np.append(checkArr, True)
-			else:
-				checkArr = np.append(checkArr, False)	
-			if((False in checkArr)==False):
-				counter=counter+1
-			checkArr=np.array([])	
+		for i in np.nditer(args):checkArr = np.append(checkArr, True if (i in items) else False)							
+		if((False in checkArr)==False):counter+=1
+		checkArr=np.array([])	
 	return counter
 
 
 #print(getCandidateMap(data))
-print()
+#print()
 print(getSupport(data,"apple","banana"))	

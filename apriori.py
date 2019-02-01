@@ -34,16 +34,17 @@ def prune(candidateMap,minSupport):
 
 def join(candidateKeys):
 	candidateKeys = np.array(candidateKeys)
-	arr = np.array([])
-	counter = 0
+	arr = {}
+	counter = 1
 	for y in np.nditer(candidateKeys[:-1]):
-		for x in np.nditer(candidateKeys[:-2]):
-			arr = np.append(arr,(candidateKeys[counter],candidateKeys[counter+1]))
+		for x in np.nditer(candidateKeys[counter:]):
+			arr[(str(y),str(x))] = 0
 		counter+=1
-	print(arr)
+	for x in arr:
+		print(x)
 	return
 
 
-print(join(['as','bs','cs','ds']))
+print(join([('a','b'),('b','c'),('c','d')]))
 #print(transform(data))
 #print(getItemCount(data,"apple","banana"))

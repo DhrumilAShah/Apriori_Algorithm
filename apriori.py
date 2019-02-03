@@ -2,49 +2,79 @@ import pandas as pd
 from pandas import DataFrame as df
 import numpy as np
 
-df = pd.read_excel('dataset/stop&shop.xlsx',header=None)
-data = np.array(df[1].values)#as_matrix
-#print(data)
-
+#input : data = [icecream,bread,sauce,bottled_water' u'\tmilk,icecream,bread'...]
+#output :  map = {('bread', 'sauce'): 3,...}
 def transform(data):
 	candMap = {}
 	for x in np.nditer(data, flags=['refs_ok'],op_flags=['readwrite']):
 		trans = np.array(str(x).split(','))
 		for i in np.nditer(trans):
 			i = str(i).strip()
-			candMap[(i)] = candMap[i]+1 if i in candMap else 1
+			if(len(i)>0):candMap[(i)] = candMap[i]+1 if i in candMap else 1
 	return candMap
 
-def getItemCount(data,*args):
+#input : data = [icecream,bread,sauce,bottled_water' u'\tmilk,icecream,bread'...], tupleItems = ('apple','banana',...)
+#output : integer = 3
+def getItemCount(data,tupleItems):
 	counter = 0
 	trans = np.array(data)
-	args = np.array(args)
+	tupleItems = np.array(tupleItems)
 	for x in np.nditer(trans, flags=['refs_ok'],op_flags=['readwrite']):
 		items = np.array(str(x).strip().split(','))
-		checkArr=np.array([])
-		for i in np.nditer(args):checkArr = np.append(checkArr, True if (i in items) else False)
+		checkArr = np.array([])
+		for i in np.nditer(tupleItems):checkArr = np.append(checkArr, True if (i in items) else False)
 		if((False in checkArr)==False):counter+=1
 		checkArr=np.array([])
 	return counter
 
+#input : candidateMap = {('bread', 'sauce'): 3,...} , minSupport = 3
+#output : map = {('bread', 'sauce'): 3,...}
 def prune(candidateMap,minSupport):
 	for key, value in candidateMap.items():
 		if(value < minSupport):del candidateMap[key]
 	return candidateMap
 
+'''
 def join(candidateKeys):
 	candidateKeys = np.array(candidateKeys)
+	#print(len(candidateKeys[0]))
 	arr = {}
 	counter = 1
 	for y in np.nditer(candidateKeys[:-1]):
 		for x in np.nditer(candidateKeys[counter:]):
 			arr[(str(y),str(x))] = 0
 		counter+=1
-	for x in arr:
-		print(x)
-	return
+	#for x in arr:print(type(x))
+	return arr
+'''
+#input : table = [('banana', 'icecream')...] || ['apple','banana',...] , firstTable = ['apple','banana','icecream',...]
+#output : map = {('bread', 'sauce'): 3,...}
+def join(table,firstTable,minSupport):
+	newTable = set([])
+	for i in table:
+		for j in firstTable:
+			if ((j in i)==False):
+				if(type(i) is str):a=np.array([i,j])
+				else:a=np.array((i+(j,)))
+				np.chararray.sort(a)
+				newTable.add( tuple(a) )
+	newTable=list(newTable)
+	candMap={}
+	for k in newTable:
+		itemCount=getItemCount(data,k)
+		if(itemCount>=minSupport):candMap[k]=itemCount
+	return candMap
 
+minSupport = 3
+df = pd.read_excel('dataset/columbia.xlsx',header=None)
+data = np.array(df[1].values)#as_matrix
+#print(data)
 
-print(join([('a','b'),('b','c'),('c','d')]))
-#print(transform(data))
-#print(getItemCount(data,"apple","banana"))
+firstTable = transform(data)
+table = prune(firstTable,minSupport)
+print(table)
+firstTableKeys = table.keys()
+
+while len(table)>0:
+	table = join(table.keys(),firstTableKeys,minSupport)
+	print(table)

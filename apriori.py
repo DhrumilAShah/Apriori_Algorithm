@@ -1,6 +1,9 @@
 import pandas as pd
 from pandas import DataFrame as df
 import numpy as np
+from itertools import combinations
+
+occuranceMap={}
 
 #input : data = [icecream,bread,sauce,bottled_water' u'\tmilk,icecream,bread'...]
 #output :  map = {('bread', 'sauce'): 3,...}
@@ -34,19 +37,6 @@ def prune(candidateMap,minSupport):
 		if(value < minSupport):del candidateMap[key]
 	return candidateMap
 
-'''
-def join(candidateKeys):
-	candidateKeys = np.array(candidateKeys)
-	#print(len(candidateKeys[0]))
-	arr = {}
-	counter = 1
-	for y in np.nditer(candidateKeys[:-1]):
-		for x in np.nditer(candidateKeys[counter:]):
-			arr[(str(y),str(x))] = 0
-		counter+=1
-	#for x in arr:print(type(x))
-	return arr
-'''
 #input : table = [('banana', 'icecream')...] || ['apple','banana',...] , firstTable = ['apple','banana','icecream',...]
 #output : map = {('bread', 'sauce'): 3,...}
 def join(table,firstTable,minSupport):
@@ -65,16 +55,71 @@ def join(table,firstTable,minSupport):
 		if(itemCount>=minSupport):candMap[k]=itemCount
 	return candMap
 
-minSupport = 3
+#input : {('bag', 'shoes', 'thermal_tshirt', 'winter_cap'): 2, ('bag', 'gloves', 'joggers', 'shoes'): 2}
+#output: {('joggers', 'socks'): ('shoes',),...},{...}]
+def generateRules(candMap):
+	arr=[]
+	for row in candMap:
+		secondMap={}
+		keyLength=1 #if keyLength is 1 generate key length of 1
+		while (keyLength !=(len(row))):#run till keylength is size-1 of row
+			rowList = list(combinations(row, keyLength))
+			for item in rowList:
+				data = (filter(lambda x : x not in item,row))
+				secondMap[(item)] = data
+			keyLength+=1
+		arr.append(secondMap)
+	return arr
+
+#suprt x&y = occurance(x&y)/total_transactions
+#confidence x -> y = occurance(x&y)/occurance(x)
+#only print qualified association rules
+def calculateConfidenceSupport(occuranceMap,allRules,minConfidence,freqKeys):
+	rules=[]
+	counter=0
+	for row in allRules:
+		occur = occuranceMap.get(freqKeys[counter])
+		map={}
+		for rule in row:
+			alteredRule =  rule[0] if (len(rule)==1) else rule
+			conf = round(occur / float(occuranceMap.get(alteredRule,None)),2)
+			if(conf >= minConfidence  ):
+				map[rule,row[rule]] = conf
+		counter+=1
+		rules.append(map)
+	return rules
+
+
+minSupport = 20
+minConfidence = 50 / 100.0
 df = pd.read_excel('dataset/columbia.xlsx',header=None)
 data = np.array(df[1].values)#as_matrix
-#print(data)
+
+
 
 firstTable = transform(data)
+totalTrans = len(data)
+occuranceMap = firstTable
+minSupport = (float(minSupport/100.0)*totalTrans)
+
 table = prune(firstTable,minSupport)
-print(table)
+#print(table)
 firstTableKeys = table.keys()
+freqItemSet = {}
+
+
 
 while len(table)>0:
 	table = join(table.keys(),firstTableKeys,minSupport)
-	print(table)
+	if(table):
+		occuranceMap.update(table)
+		freqItemSet = table
+		#print(table)
+
+#print(freqItemSet.keys())
+
+allRules = generateRules(freqItemSet)
+
+associationRules = calculateConfidenceSupport(occuranceMap,allRules,minConfidence,freqItemSet.keys())
+
+print(associationRules)

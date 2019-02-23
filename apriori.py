@@ -1,18 +1,22 @@
+#Author: Dhrumil Shah
 import pandas as pd
 from pandas import DataFrame as df
 import numpy as np
 from itertools import combinations
 import sys
+import math
+#this funtion takes raw data and converts it into frequency table of 1 item(first candidate key table)
 #input : data = [icecream,bread,sauce,bottled_water' u'\tmilk,icecream,bread'...]
-#output :  map = {('bread', 'sauce'): 3,...}
+#output :  map = {'bread':4, 'sauce': 3,...}
 def transform(data):
 	candMap = {}
-	for x in np.nditer(data, flags=['refs_ok'],op_flags=['readwrite']):
-		trans = np.array(str(x).split(','))
-		for i in np.nditer(trans):
+	for x in np.nditer(data, flags=['refs_ok'],op_flags=['readwrite']):#refs_ok is used for object type
+		trans = np.array(str(x).split(','))#convert it into string numpy array
+		for i in np.nditer(trans):# iterate through every transations
 			i = str(i).strip()
-			if(len(i)>0):candMap[(i)] = candMap[i]+1 if i in candMap else 1
+			if(len(i)>0):candMap[(i)] = candMap[i]+1 if i in candMap else 1 #count occurence of each item
 	return candMap
+#returns frequency of specified itemset from the whole dataset
 #input : data = [icecream,bread,sauce,bottled_water' u'\tmilk,icecream,bread'...], tupleItems = ('apple','banana',...)
 #output : integer = 3
 def getItemCount(data,tupleItems):
@@ -26,14 +30,16 @@ def getItemCount(data,tupleItems):
 		if((False in checkArr)==False):counter+=1
 		checkArr=np.array([])
 	return counter
+#filters table given minimum support
 #input : candidateMap = {('bread', 'sauce'): 3,...} , minSupport = 3
 #output : map = {('bread', 'sauce'): 3,...}
 def prune(candidateMap,minSupport):
 	for key, value in candidateMap.items():
 		if(value < minSupport):del candidateMap[key]
 	return candidateMap
-#input : table = [('banana', 'icecream')...] || ['apple','banana',...] , firstTable = ['apple','banana','icecream',...]
-#output : map = {('bread', 'sauce'): 3,...}
+#creates (itemcount+1) table after they are pruned
+#input : table = {('bread', 'sauce'): 3, ('banana', 'nutella'): 3,..} , firstTable = ['apple','banana','icecream',...]
+#output : map = {('apple', 'banana', 'nutella'): 3, ...}
 def join(table,firstTable,minSupport):
 	newTable = set([])
 	for i in table:
@@ -49,6 +55,7 @@ def join(table,firstTable,minSupport):
 		itemCount=getItemCount(data,k)
 		if(itemCount>=minSupport):candMap[k]=itemCount
 	return candMap
+#generates association rules
 #input : {('bag', 'shoes', 'thermal_tshirt', 'winter_cap'): 2, ('bag', 'gloves', 'joggers', 'shoes'): 2}
 #output: {('joggers', 'socks'): ('shoes',),...},{...}]
 def generateRules(candMap):
@@ -64,6 +71,7 @@ def generateRules(candMap):
 			keyLength+=1
 		arr.append(secondMap)
 	return arr
+#calculates confidence and filters
 #suprt x&y = occurance(x&y)/total_transactions
 #confidence x -> y = occurance(x&y)/occurance(x)
 #only print qualified association rules
@@ -88,17 +96,21 @@ if(len(sys.argv)<3):
 	print("Please input 3 arguments:")
 	print("1) Minimum Support(%)")
 	print("2) Minimum Confidence(%)")
-	print("3) Dataset(Amazon,BedBath,Columbia,Ikea,Stop&Shop)")
+	print("3) Dataset(Amazon(a),BedBath(b),Columbia(c),Ikea(i),Stop&Shop(s))")
 else:
-
 	minSupport = float(sys.argv[1])
-	minConfidence = float(sys.argv[2]) / 100.0
-	letter = sys.argv[3][:1]
+	minConfidence = float(sys.argv[2])
+	if(minSupport<1 or minConfidence<1 ):
+		print("Values should be greater than zero.")
+		sys.exit(1)
+	minConfidence=minConfidence/100
+	letter = (sys.argv[3][:1]).lower()
 	dataset = ""
 	if(letter == 'a'): dataset="amazon"
 	elif(letter== 'b') : dataset="bedbath&beyond"
 	elif(letter == 'c') : dataset="columbia"
 	elif(letter == 'i') : dataset="ikea"
+	elif(letter == 's') : dataset="stop&shop"
 	else:
 		print('Please selet a valid dataset')
 		sys.exit(1)
@@ -106,9 +118,11 @@ else:
 	df = pd.read_excel('dataset/'+dataset+'.xlsx',header=None)
 	data = np.array(df[1].values)#as_matrix
 	firstTable = transform(data)
+	#print(firstTable)
 	totalTrans = len(data)
 	occuranceMap = firstTable
-	minSupport = (float(minSupport/100.0)*totalTrans)
+	minSupport = math.ceil((float(minSupport/100.0)*totalTrans))
+	#print(minSupport,minConfidence)
 	table = prune(firstTable,minSupport)
 	#print(table)
 	firstTableKeys = table.keys()
@@ -118,8 +132,15 @@ else:
 		if(table):
 			occuranceMap.update(table)
 			freqItemSet = table
-			#print(table)
+	print('\n---------------Frequent Item Set---------------\n')
+	for items in freqItemSet:
+		print(items,freqItemSet[items])
+		print('')
 	allRules = generateRules(freqItemSet)
 	associationRules = calculateConfidenceSupport(occuranceMap,allRules,minConfidence,freqItemSet.keys(),totalTrans)
+	print('\n---------------Association rules---------------')
+	print('Format is (X),(Y),(support,confidence)\n')
 	for row in associationRules:
-		print(row)
+		for rules in row:
+			print(rules,row[rules])
+		print('')
